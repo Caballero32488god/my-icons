@@ -1,0 +1,350 @@
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/Caballero32488god/my-icons/main/Bruh'))()
+local Window = OrionLib:MakeWindow({Name = "Masterboy123 [] Muscle Legend", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+-- Variarible
+local username = ""
+local selectedPosition = CFrame.new(0, 0, 0)
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Backpack = LocalPlayer:FindFirstChild("Backpack")
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local RunService = game:GetService("RunService")
+local loopConnection
+local selectedPosition = CFrame.new(0, 0, 0)
+local toggleOn = false
+
+-- Main Tab
+local MainTab = Window:MakeTab({
+    Name = "Main",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Section: Reset Player
+MainTab:AddSection({
+    Name = "Main"
+})
+
+-- Button: Reset Character
+MainTab:AddButton({
+    Name = "Reset Character",
+    Callback = function()
+        local player = game.Players.LocalPlayer
+        if player.Character and player.Character:FindFirstChild("Humanoid") then
+            player.Character.Humanoid.Health = 0
+        end
+    end    
+})
+
+-- Textbox: Speed Power
+MainTab:AddTextbox({
+    Name = "Speed Power",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(Value)
+        local speedPower = tonumber(Value)
+        if speedPower then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = speedPower
+        end
+    end
+})
+
+-- Textbox: Jump Power
+MainTab:AddTextbox({
+    Name = "Jump Power",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(Value)
+        local jumpPower = tonumber(Value)
+        if jumpPower then
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = jumpPower
+        end
+    end
+})
+
+-- Teleport Tab
+local TeleportTab = Window:MakeTab({
+    Name = "Teleport",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+TeleportTab:AddSection({
+    Name = "Teleports"
+})
+
+-- Dropdown for selecting island
+TeleportTab:AddDropdown({
+    Name = "Select Island",
+    Options = {
+        "Tiny Island",
+        "Frost Island",
+        "Mythical Island",
+        "Inferno Island",
+        "Legend Island",
+        "Muscle King"
+    },
+    Callback = function(option)
+        local positions = {
+            ["Tiny Island"] = CFrame.new(-38.4037132, 9.66723633, 1832.29114),
+            ["Frost Island"] = CFrame.new(-2533.64258, 13.7738762, -408.134796),
+            ["Mythical Island"] = CFrame.new(2170.5437, 13.8738737, 1073.75525),
+            ["Inferno Island"] = CFrame.new(-6678.75635, 13.8738737, -1285.4198),
+            ["Legend Island"] = CFrame.new(4685.5625, 997.608765, -3910.30908),
+            ["Muscle King"] = CFrame.new(-8546.25879, 23.045435, -5636.78418)
+        }
+        selectedPosition = positions[option]
+    end
+})
+
+-- Toggle to enable teleport
+TeleportTab:AddToggle({
+    Name = "Teleport To Island",
+    Default = false,
+    Callback = function(state)
+        local player = game.Players.LocalPlayer
+        if state and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = selectedPosition
+            print("Teleported to:", selectedPosition.Position)
+        end
+    end
+})
+TeleportTab:AddDropdown({
+    Name = "Select Rock",
+    Options = {
+        "Tiny Rock",
+        "Frozen Rock",
+        "Mystic Rock",
+        "Inferno Rock",
+        "Rock Of Legends",
+        "Muscle King Rock"
+    },
+    Callback = function(option)
+        if option == "Tiny Rock" then
+            selectedPosition = CFrame.new(17.6410236, -1.30998898, 2106.48926, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+        elseif option == "Frozen Rock" then
+            selectedPosition = CFrame.new(-2551.75854, -0.359962642, -243.308777, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+        elseif option == "Mystic Rock" then
+            selectedPosition = CFrame.new(2186.14111, -0.359961987, 1250.59802, 0.996191859, -0, -0.0871884301, 0, 1, -0, 0.0871884301, 0, 0.996191859)
+        elseif option == "Inferno Rock" then
+            selectedPosition = CFrame.new(-7262.18701, -0.359961987, -1259.24426, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+        elseif option == "Rock Of Legends" then
+            selectedPosition = CFrame.new(4140.41797, 987.453186, -4089.34937, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+        elseif option == "Muscle King Rock" then
+            selectedPosition = CFrame.new(-8971.56641, 27.4031715, -6061.27734, -1, 0, 0, 0, 1, 0, 0, 0, -1)
+        end
+    end
+})
+
+TeleportTab:AddToggle({
+    Name = "Teleport To Rock",
+    Default = false,
+    Callback = function(state)
+        toggleOn = state
+        if toggleOn then
+            local player = game.Players.LocalPlayer
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                player.Character.HumanoidRootPart.CFrame = selectedPosition
+                print("Teleported to:", selectedPosition.Position)
+            end
+        end
+    end
+})
+
+-- Player Tab
+local PlayerTab = Window:MakeTab({
+    Name = "Player",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Section: Watch Player POV
+local PlayerSection = PlayerTab:AddSection({
+    Name = "Player"
+})
+
+-- Textbox: Player Username
+PlayerSection:AddTextbox({
+    Name = "Player Username",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(value)
+        username = value
+        print("Username entered:", username)
+    end
+})
+
+-- Toggle: Spy Player
+PlayerSection:AddToggle({
+    Name = "Spy Player",
+    Default = false,
+    Callback = function(state)
+        local camera = workspace.CurrentCamera
+        if state then
+            -- Enable POV watching
+            local targetPlayer = game.Players:FindFirstChild(username)
+            if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                camera.CameraSubject = targetPlayer.Character.Humanoid
+                camera.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame
+                print("Watching POV of:", username)
+            else
+                warn("Player not found or player has no HumanoidRootPart.")
+            end
+        else
+            -- Reset camera to player's character
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                camera.CameraSubject = LocalPlayer.Character.Humanoid
+                camera.CFrame = LocalPlayer.Character.HumanoidRootPart.CFrame
+                print("Reset camera to player’s POV")
+            end
+        end
+    end
+})
+
+PlayerTab:AddSection({
+    Name = "Auto Punch"
+})
+
+local punchLoop
+
+PlayerTab:AddToggle({
+    Name = "Auto Punch",
+    Default = false,
+    Callback = function(Value)
+        local punchTool = Backpack:FindFirstChild("Punch") or Character:FindFirstChild("Punch")
+        if Value then
+            if punchTool then
+                LocalPlayer.Character.Humanoid:EquipTool(punchTool)
+                punchLoop = RunService.Heartbeat:Connect(function()
+                    punchTool:Activate()
+                end)
+            end
+        else
+            if punchLoop then
+                punchLoop:Disconnect()
+            end
+            punchTool = Character:FindFirstChild("Punch")
+            if punchTool then
+                punchTool:Deactivate()
+                punchTool.Parent = Backpack
+            end
+        end
+    end    
+})
+
+PlayerTab:AddSection({
+    Name = "Auto Kill"
+})
+
+PlayerTab:AddToggle({
+    Name = "Auto Kill",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            loopConnection = RunService.Heartbeat:Connect(function()
+                for _, player in pairs(Players:GetPlayers()) do
+                    if player.Character and player.Character:FindFirstChild("Head") and player ~= Players.LocalPlayer then
+                        local head = player.Character.Head
+                        local rightHand = LocalPlayer.Character:FindFirstChild("RightHand")
+                        local leftHand = LocalPlayer.Character:FindFirstChild("LeftHand")
+                        if rightHand and leftHand then
+                            head.Position = rightHand.Position
+                            wait(0.1)
+                            head.Position = leftHand.Position
+                        end
+                    end
+                end
+            end)
+        else
+            if loopConnection then
+                loopConnection:Disconnect()
+            end
+        end
+    end    
+})
+
+-- AutoFarm Tab
+local AutoFarmTab = Window:MakeTab({
+    Name = "AutoFarm",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Settings Tab
+local SettingsTab = Window:MakeTab({
+    Name = "Settings",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local Section = SettingsTab:AddSection({
+	Name = "Settings"
+})
+
+SettingsTab:AddButton({
+    Name = "Destroy Ad",
+    Callback = function()
+        -- Find and destroy the part named "RobloxForwardPortals"
+        local part = workspace:FindFirstChild("RobloxForwardPortals")
+        if part then
+            part:Destroy()
+            print("Part 'RobloxForwardPortals' has been destroyed.")
+        else
+            print("Part 'RobloxForwardPortals' not found.")
+        end
+    end    
+})
+
+-- Button: Anti Afk
+SettingsTab:AddButton({
+    Name = "Anti Afk",
+    Callback = function()
+        local ba = Instance.new("ScreenGui")
+        local ca = Instance.new("TextLabel")
+        local da = Instance.new("Frame")
+        local _b = Instance.new("TextLabel")
+        local ab = Instance.new("TextLabel")
+
+        ba.Parent = game.CoreGui
+        ba.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+        ca.Parent = ba
+        ca.Active = true
+        ca.BackgroundColor3 = Color3.new(0.176471, 0.176471, 0.176471)
+        ca.Draggable = true
+        ca.Position = UDim2.new(0.698610067, 0, 0.098096624, 0)
+        ca.Size = UDim2.new(0, 304, 0, 52)
+        ca.Font = Enum.Font.SourceSansSemibold
+        ca.Text = "Masterboy123 [] Muscle Legend"
+        ca.TextColor3 = Color3.new(0, 1, 1)
+        ca.TextSize = 20
+
+        da.Parent = ca
+        da.BackgroundColor3 = Color3.new(0.176471, 0.176471, 0.176471)
+        da.BorderSizePixel = 0
+        da.Position = UDim2.new(0, 0, 1.01923084, 0)
+        da.Size = UDim2.new(0, 304, 0, 107)
+
+        _b.Parent = da
+        _b.BackgroundColor3 = Color3.new(0.176471, 0.176471, 0.176471)
+        _b.BorderSizePixel = 0
+        _b.Position = UDim2.new(0, 0, 0.800000012, 0)
+        _b.Size = UDim2.new(0, 304, 0, 21)
+        _b.Font = Enum.Font.SourceSansSemibold
+        _b.Text = "Masterboy123 [] Muscle Legend"
+        _b.TextColor3 = Color3.new(0, 1, 1)
+        _b.TextSize = 20
+
+        ab.Parent = da
+        ab.BackgroundColor3 = Color3.new(0.176471, 0.176471, 0.176471)
+        ab.BorderSizePixel = 0
+        ab.Position = UDim2.new(0, 0, 0.800000012, 0)
+        ab.Size = UDim2.new(0, 304, 0, 21)
+        ab.Font = Enum.Font.SourceSansSemibold
+        ab.Text = "Masterboy123 [] Muscle Legend"
+        ab.TextColor3 = Color3.new(0, 1, 1)
+        ab.TextSize = 20
+    end    
+})
+
+OrionLib:Init()
